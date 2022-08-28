@@ -8,31 +8,17 @@ vars:
   corpus_spacy: "cns_hcpa.spacy"
   train_spacy: "train.spacy"
   dev_spacy: "dev.spacy"
-  lg_model: "shc-cn-v2"
+  lg_model: "xlm-roberta-large"
   trf_config: "configs/base_config.cfg"
   trf_config_final: "configs/config.cfg"
   trained_model: "training/model-best"
   bucket: "shc-ai-models"
 
 assets:
-  - dest: "assets/${vars.lg_model}/config.json"
-    url: "s3://shc-ai-models/language_model/${vars.lg_model}/config.json"
-    description: "Config"
-  - dest: "assets/${vars.lg_model}/special_tokens_map.json"
-    url: "s3://shc-ai-models/language_model/${vars.lg_model}/special_tokens_map.json"
-    description: "Special tokens"
-  - dest: "assets/${vars.lg_model}/tokenizer_config.json"
-    url: "s3://shc-ai-models/language_model/${vars.lg_model}/tokenizer_config.json"
-    description: "Tokenizer config"
-  - dest: "assets/${vars.lg_model}/training_args.bin"
-    url: "s3://shc-ai-models/language_model/${vars.lg_model}/training_args.bin"
-    description: "Training bin"
-  - dest: "assets/${vars.lg_model}/vocab.txt"
-    url: "s3://shc-ai-models/language_model/${vars.lg_model}/vocab.txt"
-    description: "Vocab"
-  - dest: "assets/${vars.lg_model}/pytorch_model.bin"
-    url: "s3://shc-ai-models/language_model/${vars.lg_model}/pytorch_model.bin"
-    description: "Model"
+  - dest: "assets/${vars.corpus_pristine}"
+    url: "s3://opas-oms/${vars.corpus_pristine}"
+    description: "Notas clínicas usadas no treino"
+
 
 directories: ["scripts", "configs", "assets", "packages", "training", "corpus"]
 
