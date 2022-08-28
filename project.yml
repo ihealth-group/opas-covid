@@ -1,0 +1,49 @@
+title: "Opas/OMS COVID-19"
+description: "Projeto de pesquisa envolvendo instituições como HCPA, GHC, OPAS/OMS e outros hospitais."
+
+vars:
+  model_name: "covid19-cl"
+  version: "1.0.0"
+  corpus_pristine: "cns_hcpa.csv"
+  corpus_spacy: "cns_hcpa.spacy"
+  train_spacy: "train.spacy"
+  dev_spacy: "dev.spacy"
+  lg_model: "shc-cn-v2"
+  trf_config: "configs/base_config.cfg"
+  trf_config_final: "configs/config.cfg"
+  trained_model: "training/model-best"
+  bucket: "shc-ai-models"
+
+assets:
+  - dest: "assets/${vars.lg_model}/config.json"
+    url: "s3://shc-ai-models/language_model/${vars.lg_model}/config.json"
+    description: "Config"
+  - dest: "assets/${vars.lg_model}/special_tokens_map.json"
+    url: "s3://shc-ai-models/language_model/${vars.lg_model}/special_tokens_map.json"
+    description: "Special tokens"
+  - dest: "assets/${vars.lg_model}/tokenizer_config.json"
+    url: "s3://shc-ai-models/language_model/${vars.lg_model}/tokenizer_config.json"
+    description: "Tokenizer config"
+  - dest: "assets/${vars.lg_model}/training_args.bin"
+    url: "s3://shc-ai-models/language_model/${vars.lg_model}/training_args.bin"
+    description: "Training bin"
+  - dest: "assets/${vars.lg_model}/vocab.txt"
+    url: "s3://shc-ai-models/language_model/${vars.lg_model}/vocab.txt"
+    description: "Vocab"
+  - dest: "assets/${vars.lg_model}/pytorch_model.bin"
+    url: "s3://shc-ai-models/language_model/${vars.lg_model}/pytorch_model.bin"
+    description: "Model"
+
+directories: ["scripts", "configs", "assets", "packages", "training", "corpus"]
+
+workflows:
+  all:
+    - create_spacy_data
+
+commands:
+  - name: "create_spacy_data"
+    help: "Convert the data to spaCy's binary format"
+    script:
+      - "python ./scripts/convert_hcpa_cn_to_spacy.py ./assets/${vars.corpus_pristine} ./corpus/${vars.corpus_spacy}"
+    outputs:
+      - "corpus/${vars.corpus_spacy}"
