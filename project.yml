@@ -25,6 +25,8 @@ directories: ["scripts", "configs", "assets", "packages", "training", "corpus"]
 workflows:
   all:
     - create_spacy_data
+    - stratify
+    - fill_config
 
 commands:
   - name: "create_spacy_data"
@@ -33,3 +35,26 @@ commands:
       - "python ./scripts/convert_hcpa_cn_to_spacy.py ./assets/${vars.corpus_pristine} ./corpus/${vars.corpus_spacy}"
     outputs:
       - "corpus/${vars.corpus_spacy}"
+  - name: "stratify"
+    help: "Stratify data for training"
+    script:
+      - "python ./scripts/stratify.py ./corpus/${vars.corpus_spacy} ./corpus/${vars.train_spacy} ./corpus/${vars.dev_spacy}"
+    outputs:
+      - "corpus/${vars.train_spacy}"
+      - "corpus/${vars.dev_spacy}"
+  - name: "fill_config"
+    help: "Fill base config file with environment information"
+    script:
+      - "python -m spacy init fill-config ${vars.trf_config} ${vars.trf_config_final}"
+    outputs:
+      - "${vars.trf_config_final}"
+  - name: "debug_data"
+    help: "Runs debug on data"
+    script:
+      - "python -m spacy debug data ${vars.trf_config_final}"
+  - name: "train"
+    help: "Train the model"
+    script:
+      - "python -m spacy train ${vars.trf_config_final}  --output training/ --gpu-id 0"
+    outputs:
+      - "${vars.trained_model}"

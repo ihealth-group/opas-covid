@@ -1,4 +1,6 @@
 assets/cns_hcpa.csv
+configs/config.cfg
+corpus/*.spacy
 .idea
 # Byte-compiled / optimized / DLL files
 __pycache__/
