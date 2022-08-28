@@ -27,6 +27,7 @@ workflows:
     - create_spacy_data
     - stratify
     - fill_config
+    - train
 
 commands:
   - name: "create_spacy_data"

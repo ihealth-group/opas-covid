@@ -20,6 +20,10 @@ def generate_examples(nlp, file: Path):
       clazz = row[8]
       if clazz == 'QUESTIONAVEL':
         continue
+
+      if len(text) > 510:
+        text = text[: 255] + text[-255:]
+
       doc = nlp.make_doc(text)
       doc_class = cats.copy()
       doc_class[clazz] = 1
