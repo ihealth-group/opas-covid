@@ -27,6 +27,7 @@ workflows:
     - create_spacy_data
     - stratify
     - fill_config
+    - debug_data
     - train
 
 commands:
