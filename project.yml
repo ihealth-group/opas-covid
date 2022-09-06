@@ -39,7 +39,7 @@ commands:
   - name: "unpack_lg"
     help: "Unpack SHC LM trained from transformers"
     script:
-      - "python ./scripts/unpack_ner.py assets/${vars.lg_model}.tar.gz ./assets"
+      - "python ./scripts/unpack.py assets/${vars.lg_model}.tar.gz ./assets"
     outputs:
       - "assets/${vars.lg_model}"
   - name: "create_spacy_data"
