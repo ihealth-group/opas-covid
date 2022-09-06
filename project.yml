@@ -19,7 +19,7 @@ assets:
   - dest: "assets/${vars.corpus_pristine}"
     url: "s3://opas-oms/${vars.corpus_pristine}"
     description: "Notas clínicas usadas no treino"
-  - dest: "assets/${vars.lg_model}"
+  - dest: "assets/${vars.lg_model}.tar.gz"
     url: "s3://${vars.bucket}/language_model/${vars.lg_model}.tar.gz"
     description: "SHC Language Model"
 
