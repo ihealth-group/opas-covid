@@ -33,6 +33,7 @@ workflows:
     - fill_config
     - debug_data
     - train
+    - upload_model
 
 commands:
   - name: "unpack_lg"
