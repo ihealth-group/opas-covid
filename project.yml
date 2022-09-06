@@ -8,7 +8,8 @@ vars:
   corpus_spacy: "cns_hcpa.spacy"
   train_spacy: "train.spacy"
   dev_spacy: "dev.spacy"
-  lg_model: "xlm-roberta-large"
+  lg_model: "shc-lm-v3"
+  cl_bucket: "opas-oms"
   trf_config: "configs/base_config.cfg"
   trf_config_final: "configs/config.cfg"
   trained_model: "training/model-best"
@@ -18,12 +19,15 @@ assets:
   - dest: "assets/${vars.corpus_pristine}"
     url: "s3://opas-oms/${vars.corpus_pristine}"
     description: "Notas clínicas usadas no treino"
-
+  - dest: "assets/${vars.lg_model}"
+    url: "s3://${vars.bucket}/language_model/${vars.lg_model}"
+    description: "SHC Language Model"
 
 directories: ["scripts", "configs", "assets", "packages", "training", "corpus"]
 
 workflows:
   all:
+    - unpack_lg
     - create_spacy_data
     - stratify
     - fill_config
@@ -31,6 +35,12 @@ workflows:
     - train
 
 commands:
+  - name: "unpack_lg"
+    help: "Unpack SHC LM trained from transformers"
+    script:
+      - "python ./scripts/unpack_ner.py assets/${vars.lg_model}.tar.gz ./assets"
+    outputs:
+      - "assets/${vars.lg_model}"
   - name: "create_spacy_data"
     help: "Convert the data to spaCy's binary format"
     script:
@@ -60,3 +70,7 @@ commands:
       - "python -m spacy train ${vars.trf_config_final}  --output training/ --gpu-id 0"
     outputs:
       - "${vars.trained_model}"
+  - name: "upload_model"
+    help: "Upload model to bucket"
+    script:
+      - "python ./scripts/upload_model.py ${vars.trained_model} ${vars.model_name}-${vars.version} ${vars.bucket} ${vars.cl_bucket}"
