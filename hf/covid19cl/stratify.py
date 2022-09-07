@@ -26,13 +26,15 @@ def stratify_text_cl(corpus, perc: float, skip_header: bool = True, train_path=N
       next(csvreader)
       for line in csvreader:
         classes_dev_count_pair = [(pair, idx) for idx, pair in enumerate(classes_dev_count) if pair[0] == line[8]][0]
+        sent = line[6].replace('"', '')
         if classes_dev_count_pair[0][1] > 0:
-          eval_file.write(f'"{line[6]}",{line[8]}\n')
+
+          eval_file.write(f'"{sent}",{line[8]}\n')
           del classes_dev_count[classes_dev_count_pair[1]]
           classes_dev_count_pair = (classes_dev_count_pair[0][0], classes_dev_count_pair[0][1] - 1)
           classes_dev_count.append(classes_dev_count_pair)
         else:
-          train_file.write(f'"{line[6]}",{line[8]}\n')
+          train_file.write(f'"{sent}",{line[8]}\n')
 
       train_file.close()
       eval_file.close()
