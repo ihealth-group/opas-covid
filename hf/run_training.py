@@ -15,11 +15,11 @@ msg = Printer()
 
 def main():
   os.makedirs('assets', exist_ok=True)
-  model_dir = Path('assets') / MODEL_NAME
+  model_dir = Path('assets') / LM_NAME
 
   s3 = boto3.client('s3')
   if not model_dir.exists():
-    msg.info(f'downloading {MODEL_NAME}')
+    msg.info(f'downloading {LM_NAME}')
     kwargs = {"Bucket": 'shc-ai-models', "Key": f'language_model/{LM_NAME}.tar.gz'}
     object_size = s3.head_object(**kwargs)["ContentLength"]
     with tqdm.tqdm(total=object_size, unit="B", unit_scale=True, desc=LM_NAME) as pbar:
