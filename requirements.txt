@@ -138,3 +138,5 @@ websocket-client==1.2.1
 Werkzeug==0.16.1
 yaspin==2.1.0
 zipp==3.6.0
+
+datasets~=2.4.0

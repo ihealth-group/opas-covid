@@ -74,4 +74,4 @@ commands:
   - name: "upload_model"
     help: "Upload model to bucket"
     script:
-      - "python ./scripts/upload_model.py ${vars.trained_model} ${vars.model_name}-${vars.version} ${vars.bucket} ${vars.cl_bucket}"
+      - "python ./scripts/upload_model.py ${vars.trained_model} ${vars.bucket} ${vars.cl_bucket}/${vars.model_name}-${vars.version}"

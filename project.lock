@@ -1,0 +1,32 @@
+create_spacy_data:
+  cmd: python -m spacy run create_spacy_data
+  script:
+    - python ./scripts/convert_hcpa_cn_to_spacy.py ./assets/cns_hcpa.csv ./corpus/cns_hcpa.spacy
+  deps: []
+  outs:
+    - path: corpus/cns_hcpa.spacy
+      md5: ff636e567745d124d9cec1b0c7a1af4b
+  spacy_version: 3.3.1
+  spacy_git_version: 5fb597f77
+stratify:
+  cmd: python -m spacy run stratify
+  script:
+    - python ./scripts/stratify.py ./corpus/cns_hcpa.spacy ./corpus/train.spacy ./corpus/dev.spacy
+  deps: []
+  outs:
+    - path: corpus/train.spacy
+      md5: 4b132aa788a62f5acf5e779449f96a4a
+    - path: corpus/dev.spacy
+      md5: 49396f2d580026ca839fd01dd7e36f6f
+  spacy_version: 3.3.1
+  spacy_git_version: 5fb597f77
+fill_config:
+  cmd: python -m spacy run fill_config
+  script:
+    - python -m spacy init fill-config configs/base_config.cfg configs/config.cfg
+  deps: []
+  outs:
+    - path: configs/config.cfg
+      md5: d8e8592feb25ed8745b72b689953650c
+  spacy_version: 3.3.1
+  spacy_git_version: 5fb597f77
