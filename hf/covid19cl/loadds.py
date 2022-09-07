@@ -1,5 +1,5 @@
-from stratify import stratify_text_cl
-from covidds import Covid19CL
+from .stratify import stratify_text_cl
+from .covidds import Covid19CL
 from wasabi import Printer
 from pathlib import Path
 import boto3
