@@ -33,7 +33,13 @@ def run_cl_training(dataset, model_name, output_dir):
     predictions, labels = eval_pred
     predictions = np.argmax(predictions, axis=1)
 
-    perclass_report = classification_report(predictions, labels, target_names=label_names, output_dict=True)
+    perclass_report = classification_report(
+      predictions,
+      labels,
+      target_names=label_names,
+      output_dict=True,
+      zero_division=0
+    )
     for label_report in perclass_report:
       if label_report in label_names:
         w_run.log({f'precision_{label_report}': perclass_report[label_report]['precision']})
