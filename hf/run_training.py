@@ -35,7 +35,7 @@ def main():
       tar.extractall(Path('assets'))
       tar.close()
 
-  dataset = load_ds(ds_id='shc_ad_corpus.csv')
+  dataset = load_ds(ds_id='cns_hcpa.csv')
 
   finalmodel_path = Path('assets') / MODEL_NAME
 

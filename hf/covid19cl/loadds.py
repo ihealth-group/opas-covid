@@ -36,8 +36,7 @@ def load_ds(ds_id: str):
     csvreader = csv.reader(dataset, delimiter=",")
     next(csvreader)
     for line in csvreader:
-      if line[1] != '':
-        classes.add(line[1])
+      classes.add(line[8])
 
   msg.info(classes)
 
