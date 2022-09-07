@@ -59,6 +59,6 @@ class Covid19CL(datasets.GeneratorBasedBuilder):
       for guid, line in enumerate(csvreader):
         yield guid, {
           "id": str(guid),
-          "sentence": line[6],
-          "label": line[8]
+          "sentence": line[0],
+          "label": line[1]
         }

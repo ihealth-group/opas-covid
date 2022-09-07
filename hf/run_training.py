@@ -49,7 +49,7 @@ def main():
   archive.add(finalmodel_path, arcname=MODEL_NAME)
   archive.close()
 
-  s3.upload_file(f'{MODEL_NAME}.tar.gz', 'opas-oms', f'ad/{MODEL_NAME}.tar.gz')
+  s3.upload_file(f'{MODEL_NAME}.tar.gz', 'opas-oms', f'{MODEL_NAME}.tar.gz')
 
 
 if __name__ == "__main__":
