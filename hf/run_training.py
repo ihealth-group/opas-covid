@@ -24,7 +24,7 @@ def main():
     object_size = s3.head_object(**kwargs)["ContentLength"]
     with tqdm.tqdm(total=object_size, unit="B", unit_scale=True, desc=LM_NAME) as pbar:
       s3.download_file(
-        ROOT_BUCKET,
+        'shc-ai-models',
         f'language_model/{LM_NAME}.tar.gz',
         f'{str(model_dir)}.tar.gz',
         Callback=lambda bytes_transferred: pbar.update(bytes_transferred)
