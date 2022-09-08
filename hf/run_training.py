@@ -7,8 +7,8 @@ import boto3
 import tqdm
 import os
 
-LM_NAME = 'shc-lm-v3'
-MODEL_NAME = 'covid19-cl-v1.0.0'
+LM_NAME = 'shc-cn-v2'
+MODEL_NAME = 'covid19-cl-v1.1.0'
 ROOT_BUCKET = os.environ.get('BUCKET_DS', 'opas-oms')
 msg = Printer()
 
@@ -45,11 +45,15 @@ def main():
     output_dir=finalmodel_path
   )
 
+  msg.info('archiving model...')
   archive = tarfile.open(f"{MODEL_NAME}.tar.gz", "w|gz")
   archive.add(finalmodel_path, arcname=MODEL_NAME)
   archive.close()
 
+  msg.info('uploading model...')
   s3.upload_file(f'{MODEL_NAME}.tar.gz', 'opas-oms', f'{MODEL_NAME}.tar.gz')
+
+  msg.info("that's all falks!")
 
 
 if __name__ == "__main__":
