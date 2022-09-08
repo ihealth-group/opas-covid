@@ -15,7 +15,8 @@ msg = Printer()
 
 def main():
   os.makedirs('assets', exist_ok=True)
-  model_dir = Path('assets') / LM_NAME
+  # model_dir = Path('assets') / LM_NAME
+  model_dir = LM_NAME
 
   s3 = boto3.client('s3')
   # if not model_dir.exists():
