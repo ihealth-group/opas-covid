@@ -104,7 +104,7 @@ def run_cl_training(dataset, model_name, output_dir):
     data_collator=data_collator,
     tokenizer=tokenizer,
     compute_metrics=compute_metrics,
-    callbacks=[EarlyStoppingCallback(early_stopping_patience=5)]
+    callbacks=[EarlyStoppingCallback(early_stopping_patience=10)]
   )
 
   trainer.train()
