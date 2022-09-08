@@ -7,8 +7,8 @@ import boto3
 import tqdm
 import os
 
-LM_NAME = 'shc-lm-v3'
-MODEL_NAME = 'covid19-cl-v1.2.0'
+LM_NAME = 'shc-cn-v2'
+MODEL_NAME = 'covid19-cl-v1.3.0-cnv2'
 ROOT_BUCKET = os.environ.get('BUCKET_DS', 'opas-oms')
 msg = Printer()
 
