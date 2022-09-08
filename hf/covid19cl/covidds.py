@@ -57,8 +57,9 @@ class Covid19CL(datasets.GeneratorBasedBuilder):
       csvreader = csv.reader(f, delimiter=",")
       next(csvreader)
       for guid, line in enumerate(csvreader):
+        sent = line[: 255] + line[-255:]
         yield guid, {
           "id": str(guid),
-          "sentence": line[0],
+          "sentence": sent,
           "label": line[1]
         }
