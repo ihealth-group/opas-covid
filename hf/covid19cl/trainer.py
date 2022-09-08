@@ -8,7 +8,7 @@ from transformers import (
   set_seed
 )
 from sklearn.metrics import classification_report
-from transformers import AutoTokenizer
+from transformers import RobertaTokenizerFast
 import numpy as np
 import evaluate
 import wandb
@@ -59,7 +59,7 @@ def run_cl_training(dataset, model_name, output_dir):
 
     return f1_overall
 
-  tokenizer = AutoTokenizer.from_pretrained(model_name)
+  tokenizer = RobertaTokenizerFast.from_pretrained(model_name, add_prefix_space=True)
 
   def preprocess_function(examples):
     return tokenizer(examples["sentence"], truncation=True)

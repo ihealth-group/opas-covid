@@ -7,8 +7,8 @@ import boto3
 import tqdm
 import os
 
-LM_NAME = 'shc-cn-v2'
-MODEL_NAME = 'covid19-cl-v1.3.0-cnv2'
+LM_NAME = 'xlm-roberta-large'
+MODEL_NAME = 'covid19-cl-v1.4.0-robl'
 ROOT_BUCKET = os.environ.get('BUCKET_DS', 'opas-oms')
 msg = Printer()
 
@@ -18,22 +18,22 @@ def main():
   model_dir = Path('assets') / LM_NAME
 
   s3 = boto3.client('s3')
-  if not model_dir.exists():
-    msg.info(f'downloading {LM_NAME}')
-    kwargs = {"Bucket": 'shc-ai-models', "Key": f'language_model/{LM_NAME}.tar.gz'}
-    object_size = s3.head_object(**kwargs)["ContentLength"]
-    with tqdm.tqdm(total=object_size, unit="B", unit_scale=True, desc=LM_NAME) as pbar:
-      s3.download_file(
-        'shc-ai-models',
-        f'language_model/{LM_NAME}.tar.gz',
-        f'{str(model_dir)}.tar.gz',
-        Callback=lambda bytes_transferred: pbar.update(bytes_transferred)
-      )
-
-      msg.info('unpaking model...')
-      tar = tarfile.open(f'{str(model_dir)}.tar.gz')
-      tar.extractall(Path('assets'))
-      tar.close()
+  # if not model_dir.exists():
+  #   msg.info(f'downloading {LM_NAME}')
+  #   kwargs = {"Bucket": 'shc-ai-models', "Key": f'language_model/{LM_NAME}.tar.gz'}
+  #   object_size = s3.head_object(**kwargs)["ContentLength"]
+  #   with tqdm.tqdm(total=object_size, unit="B", unit_scale=True, desc=LM_NAME) as pbar:
+  #     s3.download_file(
+  #       'shc-ai-models',
+  #       f'language_model/{LM_NAME}.tar.gz',
+  #       f'{str(model_dir)}.tar.gz',
+  #       Callback=lambda bytes_transferred: pbar.update(bytes_transferred)
+  #     )
+  #
+  #     msg.info('unpaking model...')
+  #     tar = tarfile.open(f'{str(model_dir)}.tar.gz')
+  #     tar.extractall(Path('assets'))
+  #     tar.close()
 
   dataset = load_ds(ds_id='cns_hcpa.csv')
 
