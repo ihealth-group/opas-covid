@@ -28,8 +28,10 @@
 export default {
   data: () => ({
     links: [
+      { name: "Sobre", to: "/about" },
       { name: "Dashboard", to: "/dashboard" },
       { name: "Paciente", to: "/patient" },
+      { name: "Critério", to: "/criteria" },
     ],
   }),
 };
