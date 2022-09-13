@@ -4,11 +4,12 @@ from transformers import (
   EarlyStoppingCallback,
   TrainingArguments,
   IntervalStrategy,
-  Trainer,
   set_seed
 )
+from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import classification_report
 from transformers import RobertaTokenizerFast
+from unbalanced import UnbalancedTrainer
 import numpy as np
 import evaluate
 import wandb
@@ -28,6 +29,10 @@ def run_cl_training(dataset, model_name, output_dir):
 
   id2label = {str(i): label for i, label in enumerate(label_names)}
   label2id = {v: k for k, v in id2label.items()}
+
+  cl_labels = dataset['train']['label']
+  classes = np.unique(cl_labels)
+  weights = compute_class_weight('balanced', classes=classes, y=cl_labels)
 
   def compute_metrics(eval_pred):
     predictions, labels = eval_pred
@@ -77,7 +82,7 @@ def run_cl_training(dataset, model_name, output_dir):
   args = TrainingArguments(
     model_name,
     overwrite_output_dir=True,
-    num_train_epochs=30,
+    num_train_epochs=200,
     per_device_train_batch_size=64,
     gradient_accumulation_steps=1,
     load_best_model_at_end=True,
@@ -96,7 +101,7 @@ def run_cl_training(dataset, model_name, output_dir):
     fp16=True
   )
 
-  trainer = Trainer(
+  trainer = UnbalancedTrainer(
     model=model,
     args=args,
     train_dataset=tokenized_datasets["train"],
@@ -104,7 +109,8 @@ def run_cl_training(dataset, model_name, output_dir):
     data_collator=data_collator,
     tokenizer=tokenizer,
     compute_metrics=compute_metrics,
-    callbacks=[EarlyStoppingCallback(early_stopping_patience=10)]
+    callbacks=[EarlyStoppingCallback(early_stopping_patience=10)],
+    weights=weights.tolist()
   )
 
   trainer.train()
