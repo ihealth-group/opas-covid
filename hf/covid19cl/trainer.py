@@ -92,7 +92,7 @@ def run_cl_training(dataset, model_name, output_dir):
     gradient_checkpointing=True,
     optim="adafactor",
     save_total_limit=1,
-    warmup_steps=20,
+    warmup_steps=100,
     weight_decay=0.01,
     learning_rate=2e-5,
     report_to=["wandb"],
