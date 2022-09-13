@@ -86,8 +86,8 @@ def run_cl_training(dataset, model_name, output_dir):
     per_device_train_batch_size=64,
     gradient_accumulation_steps=1,
     load_best_model_at_end=True,
-    evaluation_strategy=IntervalStrategy.EPOCH,
-    save_strategy=IntervalStrategy.EPOCH,
+    evaluation_strategy=IntervalStrategy.STEPS,
+    save_steps=100,
     metric_for_best_model='f1',
     gradient_checkpointing=True,
     optim="adafactor",
@@ -96,7 +96,7 @@ def run_cl_training(dataset, model_name, output_dir):
     weight_decay=0.01,
     learning_rate=2e-5,
     report_to=["wandb"],
-    logging_steps=20,
+    logging_steps=100,
     do_eval=True,
     fp16=True
   )
