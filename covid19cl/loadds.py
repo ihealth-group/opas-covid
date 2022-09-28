@@ -7,7 +7,6 @@ import tqdm
 import csv
 import os
 
-ROOT_BUCKET = os.environ.get('BUCKET_DS', 'opas-oms')
 WORKING_DIR = os.environ.get('WORKING_DIR', '.working')
 
 s3 = boto3.client('s3')
@@ -15,16 +14,19 @@ s3 = boto3.client('s3')
 msg = Printer()
 
 
-def load_ds(ds_id: str):
+def load_ds(ds_id: str, root_bucket: str, text_cl_positions: str):
+  splits_cl_pos = text_cl_positions.split(',')
+  text_pos = int(splits_cl_pos[0])
+  cl_pos = int(splits_cl_pos[1])
   os.makedirs(WORKING_DIR, exist_ok=True)
   ds = WORKING_DIR / Path(ds_id)
   if not ds.exists():
     msg.info(f'downloading {ds_id}')
-    kwargs = {"Bucket": ROOT_BUCKET, "Key": ds_id}
+    kwargs = {"Bucket": root_bucket, "Key": ds_id}
     object_size = s3.head_object(**kwargs)["ContentLength"]
     with tqdm.tqdm(total=object_size, unit="B", unit_scale=True, desc=ds_id) as pbar:
       s3.download_file(
-        ROOT_BUCKET,
+        root_bucket,
         ds_id,
         str(ds),
         Callback=lambda bytes_transferred: pbar.update(bytes_transferred)
@@ -36,9 +38,9 @@ def load_ds(ds_id: str):
     csvreader = csv.reader(dataset, delimiter=",")
     next(csvreader)
     for line in csvreader:
-      classes.add(line[8])
+      classes.add(line[cl_pos])
 
-  msg.info(classes)
+  msg.pretty(classes)
 
   train_file = Path(f'{WORKING_DIR}/train.ds')
   eval_file = Path(f'{WORKING_DIR}/eval.ds')
@@ -48,7 +50,9 @@ def load_ds(ds_id: str):
       corpus=ds,
       perc=.2,
       train_path=train_file,
-      eval_path=eval_file
+      eval_path=eval_file,
+      text_pos=text_pos,
+      cl_pos=cl_pos
     )
 
   dataset = Covid19CL(

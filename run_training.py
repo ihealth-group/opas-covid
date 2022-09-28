@@ -1,3 +1,4 @@
+from covid19cl.run_params import OpasCovidParams
 from covid19cl.trainer import run_cl_training
 from covid19cl.loadds import load_ds
 from wasabi import Printer
@@ -7,26 +8,23 @@ import boto3
 import tqdm
 import os
 
-LM_NAME = 'shc-lm-v3.1'
-MODEL_NAME = 'covid19-cl-v1.5.0-lmv3.1'
-ROOT_BUCKET = os.environ.get('BUCKET_DS', 'opas-oms')
 msg = Printer()
 
 
 def main():
+  args = OpasCovidParams().get_params()
   os.makedirs('assets', exist_ok=True)
-  model_dir = Path('assets') / LM_NAME
-  # model_dir = LM_NAME
+  model_dir = Path('assets') / args.lm
 
   s3 = boto3.client('s3')
   if not model_dir.exists():
-    msg.info(f'downloading {LM_NAME}')
-    kwargs = {"Bucket": 'shc-ai-models', "Key": f'language_model/{LM_NAME}.tar.gz'}
+    msg.info(f'downloading {args.lm}')
+    kwargs = {"Bucket": 'shc-ai-models', "Key": f'language_model/{args.lm}.tar.gz'}
     object_size = s3.head_object(**kwargs)["ContentLength"]
-    with tqdm.tqdm(total=object_size, unit="B", unit_scale=True, desc=LM_NAME) as pbar:
+    with tqdm.tqdm(total=object_size, unit="B", unit_scale=True, desc=args.lm) as pbar:
       s3.download_file(
-        'shc-ai-models',
-        f'language_model/{LM_NAME}.tar.gz',
+        args.lm_bucket,
+        f'language_model/{args.lm}.tar.gz',
         f'{str(model_dir)}.tar.gz',
         Callback=lambda bytes_transferred: pbar.update(bytes_transferred)
       )
@@ -36,9 +34,13 @@ def main():
       tar.extractall(Path('assets'))
       tar.close()
 
-  dataset = load_ds(ds_id='cns_hcpa.csv')
+  dataset = load_ds(
+    ds_id=args.corpus_id,
+    root_bucket=args.root_bucket,
+    text_cl_positions=args.text_cl_positions
+  )
 
-  finalmodel_path = Path('assets') / MODEL_NAME
+  finalmodel_path = Path('assets') / args.model_name
 
   run_cl_training(
     dataset=dataset,
@@ -47,12 +49,12 @@ def main():
   )
 
   msg.info('archiving model...')
-  archive = tarfile.open(f"{MODEL_NAME}.tar.gz", "w|gz")
-  archive.add(finalmodel_path, arcname=MODEL_NAME)
+  archive = tarfile.open(f"{args.model_name}.tar.gz", "w|gz")
+  archive.add(finalmodel_path, arcname=args.model_name)
   archive.close()
 
   msg.info('uploading model...')
-  s3.upload_file(f'{MODEL_NAME}.tar.gz', 'opas-oms', f'{MODEL_NAME}.tar.gz')
+  s3.upload_file(f'{args.model_name}.tar.gz', 'opas-oms', f'{args.model_name}.tar.gz')
 
   msg.info("that's all folks!")
 

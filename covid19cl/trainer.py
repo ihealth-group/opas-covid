@@ -2,13 +2,13 @@ from transformers import (
   AutoModelForSequenceClassification,
   DataCollatorWithPadding,
   EarlyStoppingCallback,
+  RobertaTokenizerFast,
   TrainingArguments,
   IntervalStrategy,
   set_seed
 )
 from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import classification_report
-from transformers import RobertaTokenizerFast
 from .unbalanced import UnbalancedTrainer
 import numpy as np
 import evaluate
