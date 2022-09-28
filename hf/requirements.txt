@@ -1,8 +1,0 @@
-transformers
-unittest
-evaluate
-datasets
-wasabi
-wandb
-boto3
-tqdm
