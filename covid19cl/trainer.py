@@ -16,7 +16,7 @@ import wandb
 
 
 def run_cl_training(dataset, model_name, output_dir):
-  w_run = wandb.init(project='opas-oms', entity="ihealth", notes="Covid19 Classifier")
+  w_run = wandb.init(project='opas-oms-uti', entity="ihealth", notes="Covid19 Classifier")
   set_seed(42)
 
   accuracy_metric = evaluate.load("accuracy")
@@ -82,7 +82,7 @@ def run_cl_training(dataset, model_name, output_dir):
   args = TrainingArguments(
     model_name,
     overwrite_output_dir=True,
-    num_train_epochs=200,
+    num_train_epochs=300,
     per_device_train_batch_size=64,
     gradient_accumulation_steps=1,
     load_best_model_at_end=True,
