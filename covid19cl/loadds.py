@@ -40,7 +40,7 @@ def load_ds(ds_id: str, root_bucket: str, text_cl_positions: str):
     for line in csvreader:
       classes.add(line[cl_pos])
 
-  msg.pretty(classes)
+  # msg.pretty(classes)
 
   train_file = Path(f'{WORKING_DIR}/train.ds')
   eval_file = Path(f'{WORKING_DIR}/eval.ds')
