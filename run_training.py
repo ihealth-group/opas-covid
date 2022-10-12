@@ -48,14 +48,6 @@ def main():
     output_dir=finalmodel_path
   )
 
-  msg.info('archiving model...')
-  archive = tarfile.open(f"{args.model_name}.tar.gz", "w|gz")
-  archive.add(finalmodel_path, arcname=args.model_name)
-  archive.close()
-
-  msg.info('uploading model...')
-  s3.upload_file(f'{args.model_name}.tar.gz', 'opas-oms', f'{args.model_name}.tar.gz')
-
   msg.info("that's all folks!")
 
 

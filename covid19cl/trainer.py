@@ -1,3 +1,4 @@
+from transformers.training_args import HubStrategy
 from transformers import (
   AutoModelForSequenceClassification,
   DataCollatorWithPadding,
@@ -80,17 +81,13 @@ def run_cl_training(dataset, model_name, output_dir):
   )
 
   args = TrainingArguments(
-    model_name,
-    overwrite_output_dir=True,
     num_train_epochs=300,
     per_device_train_batch_size=64,
     gradient_accumulation_steps=1,
     load_best_model_at_end=True,
     evaluation_strategy=IntervalStrategy.STEPS,
-    save_steps=100,
     metric_for_best_model='f1',
     gradient_checkpointing=True,
-    optim="adafactor",
     save_total_limit=1,
     warmup_steps=100,
     weight_decay=0.01,
@@ -98,7 +95,12 @@ def run_cl_training(dataset, model_name, output_dir):
     report_to=["wandb"],
     logging_steps=100,
     do_eval=True,
-    fp16=True
+    fp16=True,
+    push_to_hub=True,
+    hub_strategy=HubStrategy.END,
+    hub_model_id='iHealthGroup/covid19-uti',
+    output_dir=output_dir,
+    overwrite_output_dir=True
   )
 
   trainer = UnbalancedTrainer(
@@ -114,5 +116,5 @@ def run_cl_training(dataset, model_name, output_dir):
   )
 
   trainer.train()
-  trainer.save_model(output_dir=output_dir)
+  trainer.save_model()
   w_run.finish()
