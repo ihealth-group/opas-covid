@@ -12,6 +12,7 @@ class OpasCovidParams:
     parser.add_argument('--text_cl_positions', default="1,2", type=str)
     parser.add_argument('--wandb_project_id', type=str)
     parser.add_argument('--wandb_entity', type=str)
+    parser.add_argument('--wandb_run_id', type=str)
     parser.add_argument('--hub_model_id', type=str)
     parser.add_argument('--output_dir', type=str)
 

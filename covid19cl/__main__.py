@@ -20,7 +20,7 @@ import wandb
 
 if __name__ == '__main__':
   args = OpasCovidParams().get_params()
-  w_run = wandb.init(project=args.wandb_project_id, entity=args.wandb_entity)
+
   set_seed(42)
 
   accuracy_metric = evaluate.load("accuracy")
@@ -127,6 +127,12 @@ if __name__ == '__main__':
     compute_metrics=compute_metrics,
     callbacks=[EarlyStoppingCallback(early_stopping_patience=10)],
     weights=weights.tolist()
+  )
+
+  w_run = wandb.init(
+    project=args.wandb_project_id,
+    entity=args.wandb_entity,
+    id=args.wandb_run_id
   )
 
   trainer.train()
