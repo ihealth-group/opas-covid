@@ -10,6 +10,10 @@ class OpasCovidParams:
     parser.add_argument('--lm_bucket', default="shc-ai-models", type=str)
     parser.add_argument('--corpus_id', default="cns_hcpa.csv", type=str)
     parser.add_argument('--text_cl_positions', default="1,2", type=str)
+    parser.add_argument('--wandb_project_id', type=str)
+    parser.add_argument('--wandb_entity', type=str)
+    parser.add_argument('--hub_model_id', type=str)
+    parser.add_argument('--output_dir', type=str)
 
     self.opts = parser.parse_args()
 

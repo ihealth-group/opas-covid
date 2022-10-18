@@ -3,27 +3,36 @@ from transformers import (
   AutoModelForSequenceClassification,
   DataCollatorWithPadding,
   EarlyStoppingCallback,
-  RobertaTokenizerFast,
+  XLMRobertaTokenizerFast,
   TrainingArguments,
   IntervalStrategy,
   set_seed
 )
 from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import classification_report
+from covid19cl.run_params import OpasCovidParams
 from .unbalanced import UnbalancedTrainer
+from covid19cl.loadds import load_ds
 import numpy as np
 import evaluate
 import wandb
 
 
-def run_cl_training(dataset, model_name, output_dir):
-  w_run = wandb.init(project='opas-oms-uti', entity="ihealth", notes="Covid19 Classifier")
+if __name__ == '__main__':
+  args = OpasCovidParams().get_params()
+  w_run = wandb.init(project=args.wandb_project_id, entity=args.wandb_entity)
   set_seed(42)
 
   accuracy_metric = evaluate.load("accuracy")
   f1_metric = evaluate.load("f1")
   precision_metric = evaluate.load("precision")
   recall_metric = evaluate.load("recall")
+
+  dataset = load_ds(
+    ds_id=args.corpus_id,
+    root_bucket=args.root_bucket,
+    text_cl_positions=args.text_cl_positions
+  )
 
   sent_feature = dataset["train"].features["label"]
   label_names = sent_feature.names
@@ -34,6 +43,7 @@ def run_cl_training(dataset, model_name, output_dir):
   cl_labels = dataset['train']['label']
   classes = np.unique(cl_labels)
   weights = compute_class_weight('balanced', classes=classes, y=cl_labels)
+
 
   def compute_metrics(eval_pred):
     predictions, labels = eval_pred
@@ -65,22 +75,26 @@ def run_cl_training(dataset, model_name, output_dir):
 
     return f1_overall
 
-  tokenizer = RobertaTokenizerFast.from_pretrained(model_name, add_prefix_space=True)
+
+  tokenizer = XLMRobertaTokenizerFast.from_pretrained(args.lm, add_prefix_space=True, use_auth_token=True)
+
 
   def preprocess_function(examples):
     return tokenizer(examples["sentence"], truncation=True)
+
 
   tokenized_datasets = dataset.map(preprocess_function, batched=True)
   data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
   model = AutoModelForSequenceClassification.from_pretrained(
-    model_name,
+    args.lm,
     num_labels=len(label_names),
     id2label=id2label,
-    label2id=label2id
+    label2id=label2id,
+    use_auth_token=True
   )
 
-  args = TrainingArguments(
+  args_training = TrainingArguments(
     num_train_epochs=300,
     per_device_train_batch_size=64,
     gradient_accumulation_steps=1,
@@ -98,14 +112,14 @@ def run_cl_training(dataset, model_name, output_dir):
     fp16=True,
     push_to_hub=True,
     hub_strategy=HubStrategy.END,
-    hub_model_id='iHealthGroup/covid19-uti',
-    output_dir=output_dir,
+    hub_model_id=args.hub_model_id,
+    output_dir=args.output_dir,
     overwrite_output_dir=True
   )
 
   trainer = UnbalancedTrainer(
     model=model,
-    args=args,
+    args=args_training,
     train_dataset=tokenized_datasets["train"],
     eval_dataset=tokenized_datasets["validation"],
     data_collator=data_collator,
