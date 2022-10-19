@@ -95,7 +95,7 @@ if __name__ == '__main__':
   )
 
   args_training = TrainingArguments(
-    num_train_epochs=300,
+    num_train_epochs=500,
     per_device_train_batch_size=64,
     gradient_accumulation_steps=1,
     load_best_model_at_end=True,
@@ -103,7 +103,7 @@ if __name__ == '__main__':
     metric_for_best_model='f1',
     gradient_checkpointing=True,
     save_total_limit=1,
-    warmup_steps=100,
+    warmup_steps=800,
     weight_decay=0.01,
     learning_rate=2e-5,
     report_to=["wandb"],
