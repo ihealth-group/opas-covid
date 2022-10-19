@@ -57,7 +57,9 @@ class Covid19CL(datasets.GeneratorBasedBuilder):
       csvreader = csv.reader(f, delimiter=",")
       next(csvreader)
       for guid, line in enumerate(csvreader):
-        sent = line[0][:255] + line[0][-255:]
+        splits = line[0].split(' ')
+        cn = splits[:255] + splits[-255:]
+        sent = ' '.join(cn)
         yield guid, {
           "id": str(guid),
           "sentence": sent,
