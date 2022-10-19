@@ -96,8 +96,8 @@ if __name__ == '__main__':
 
   args_training = TrainingArguments(
     num_train_epochs=500,
-    per_device_train_batch_size=64,
-    gradient_accumulation_steps=1,
+    per_device_train_batch_size=32,
+    gradient_accumulation_steps=2,
     load_best_model_at_end=True,
     evaluation_strategy=IntervalStrategy.STEPS,
     metric_for_best_model='f1',
