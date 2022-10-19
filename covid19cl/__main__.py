@@ -3,7 +3,7 @@ from transformers import (
   AutoModelForSequenceClassification,
   DataCollatorWithPadding,
   EarlyStoppingCallback,
-  XLMRobertaTokenizerFast,
+  AutoTokenizer,
   TrainingArguments,
   IntervalStrategy,
   set_seed
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     return f1_overall
 
 
-  tokenizer = XLMRobertaTokenizerFast.from_pretrained(args.lm, add_prefix_space=True, use_auth_token=True)
+  tokenizer = AutoTokenizer.from_pretrained(args.lm, use_auth_token=True)
 
 
   def preprocess_function(examples):
