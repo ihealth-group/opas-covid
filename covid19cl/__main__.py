@@ -80,7 +80,12 @@ if __name__ == '__main__':
 
 
   def preprocess_function(examples):
-    return tokenizer(examples["sentence"], truncation=True)
+    return tokenizer(
+      examples["sentence"],
+      truncation=True,
+      padding='max_length',
+      max_length=512
+    )
 
 
   tokenized_datasets = dataset.map(preprocess_function, batched=True)
