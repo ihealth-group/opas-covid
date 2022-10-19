@@ -6,6 +6,7 @@ from transformers import (
   AutoTokenizer,
   TrainingArguments,
   IntervalStrategy,
+  Trainer,
   set_seed
 )
 from sklearn.utils.class_weight import compute_class_weight
@@ -123,7 +124,7 @@ if __name__ == '__main__':
     overwrite_output_dir=True
   )
 
-  trainer = UnbalancedTrainer(
+  trainer = Trainer(
     model=model,
     args=args_training,
     train_dataset=tokenized_datasets["train"],
@@ -131,9 +132,9 @@ if __name__ == '__main__':
     data_collator=data_collator,
     tokenizer=tokenizer,
     compute_metrics=compute_metrics,
-    callbacks=[EarlyStoppingCallback(early_stopping_patience=10)],
-    weights=weights.tolist()
+    callbacks=[EarlyStoppingCallback(early_stopping_patience=5)]
   )
+  # weights=weights.tolist()
 
   w_run = wandb.init(
     project=args.wandb_project_id,
