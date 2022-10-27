@@ -124,7 +124,7 @@ if __name__ == '__main__':
     overwrite_output_dir=True
   )
 
-  trainer = Trainer(
+  trainer = UnbalancedTrainer(
     model=model,
     args=args_training,
     train_dataset=tokenized_datasets["train"],
@@ -132,9 +132,9 @@ if __name__ == '__main__':
     data_collator=data_collator,
     tokenizer=tokenizer,
     compute_metrics=compute_metrics,
-    callbacks=[EarlyStoppingCallback(early_stopping_patience=5)]
+    callbacks=[EarlyStoppingCallback(early_stopping_patience=5)],
+    weights=weights.tolist()
   )
-  # weights=weights.tolist()
 
   w_run = wandb.init(
     project=args.wandb_project_id,
