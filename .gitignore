@@ -1,3 +1,4 @@
+tests/data
 assets/cns_hcpa.csv
 configs/config.cfg
 corpus/*.spacy
